@@ -78,14 +78,14 @@ func connectDb() {
 		log.Println("No .env file found")
 	}
 	uri := os.Getenv("MONGODB_URI")
-	// Use the SetServerAPIOptions() method to set the version of the Stable API on the client
+
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 	opts := options.Client().ApplyURI(uri).SetServerAPIOptions(serverAPI)
 
 	if uri == "" {
 		log.Fatal("You must set your 'MONGODB_URI' environment variable. See\n\t https://www.mongodb.com/docs/drivers/go/current/usage-examples/#environment-variable")
 	}
-	// Create a new client and connect to the server
+
 	client, err := mongo.Connect(context.TODO(), opts)
 	if err != nil {
 		panic(err)
@@ -95,7 +95,7 @@ func connectDb() {
 			panic(err)
 		}
 	}()
-	// Send a ping to confirm a successful connection
+
 	if err := client.Database("admin").RunCommand(context.TODO(), bson.D{{"ping", 1}}).Err(); err != nil {
 		panic(err)
 	}
