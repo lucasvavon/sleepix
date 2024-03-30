@@ -1,10 +1,10 @@
-# SlipX API
+# Sleepix App
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ## Overview
 
-SlipX API is a Golang-based API developed for the SlipX application. This API serves as the backend for the SlipX application, providing essential functionality and communication between the application and the server.
+Sleepix is a 
 
 ## Usage
 
