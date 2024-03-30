@@ -9,7 +9,7 @@ services:
     volumes:
       - api:/usr/src/app/
     depends_on:
-      - fullstack-postgres          # Uncomment this when using postgres.
+      - fullstack-postgres          # Uncomment this when using mysql.
       # - fullstack-mysql           # Uncomment this when using mysql.
     networks:
       - fullstack
@@ -80,7 +80,7 @@ services:
 
 volumes:
   api:
-  database_postgres:                  # Uncomment this when using postgres.
+  database_postgres:                  # Uncomment this when using mysql.
   # database_mysql:                   # Uncomment this when using mysql.
 
 # Networks to be created to facilitate communication between containers

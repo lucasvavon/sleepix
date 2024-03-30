@@ -2,16 +2,28 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/lucasvavon/slipx-api/internal/services"
+	"github.com/lucasvavon/slipx-api/internal/core/services"
 	"net/http"
 )
 
-func GetAllUsers(c *gin.Context) {
-	users, err := services.NewUserService().GetUsers()
+type UserHandler struct {
+	us services.UserService
+}
+
+func NewUserHandler(UserService services.UserService) *UserHandler {
+	return &UserHandler{
+		us: UserService,
+	}
+}
+
+func (h *UserHandler) GetUsers(ctx *gin.Context) {
+	users, err := h.us.GetUsers()
+
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch users"})
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
 		return
 	}
-
-	c.JSON(http.StatusOK, users)
+	ctx.JSON(http.StatusOK, users)
 }
