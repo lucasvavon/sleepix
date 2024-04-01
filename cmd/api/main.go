@@ -34,6 +34,8 @@ func InitRoutes() {
 	r.GET("/users", handler.GetUsers)
 	r.GET("/users/:id", handler.GetUser)
 	r.POST("/users", handler.CreateUser)
+	r.DELETE("/users/:id", handler.DeleteUser)
+	r.PUT("/users/:id", handler.UpdateUser)
 	err := r.Run(":3000")
 	if err != nil {
 		return

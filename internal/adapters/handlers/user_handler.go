@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/lucasvavon/slipx-api/internal/core/domain"
 	"github.com/lucasvavon/slipx-api/internal/core/services"
@@ -53,12 +54,46 @@ func (h *UserHandler) CreateUser(ctx *gin.Context) {
 		return
 	}
 
-	user, err := h.us.CreateUser(&user)
+	err := h.us.CreateUser(&user)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	// Si tout se passe bien, retournez l'utilisateur créé.
 	ctx.JSON(http.StatusOK, user)
+}
+
+func (h *UserHandler) DeleteUser(ctx *gin.Context) {
+	id, _ := strconv.Atoi(ctx.Param("id"))
+
+	err := h.us.DeleteUser(&id)
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, fmt.Sprintf("User %d has been deleted", id))
+}
+
+func (h *UserHandler) UpdateUser(ctx *gin.Context) {
+	var updateUser domain.User
+	id, _ := strconv.Atoi(ctx.Param("id"))
+
+	// Bind the JSON body to the updateUser variable.
+	if err := ctx.ShouldBindJSON(&updateUser); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Call the UserService to update the user.
+	err := h.us.UpdateUser(&id, &updateUser)
+	if err != nil {
+		// Handle errors, e.g., user not found or validation errors.
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Respond with success.
+	ctx.JSON(http.StatusOK, gin.H{"message": "User updated successfully"})
 }

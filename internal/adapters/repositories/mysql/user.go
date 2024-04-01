@@ -35,22 +35,37 @@ func (r *UserGORMRepository) GetUser(id *int) (domain.User, error) {
 	return user, nil
 }
 
-func (r *UserGORMRepository) CreateUser(user *domain.User) (domain.User, error) {
+func (r *UserGORMRepository) CreateUser(user *domain.User) error {
 	req := r.db.Create(&user)
 
 	if req.Error != nil {
-		return domain.User{}, req.Error
+		return req.Error
 	}
 
-	return *user, nil
+	return nil
 }
 
-func (r *UserGORMRepository) UpdateUser(user *domain.User) error {
-	//TODO implement me
-	panic("implement me")
+func (r *UserGORMRepository) UpdateUser(id *int, user *domain.User) error {
+
+	user.ID = id
+
+	req := r.db.Save(user)
+
+	if req.Error != nil {
+		return req.Error
+	}
+
+	return nil
 }
 
 func (r *UserGORMRepository) DeleteUser(id *int) error {
-	//TODO implement me
-	panic("implement me")
+	var user domain.User
+
+	req := r.db.Delete(&user, &id)
+
+	if req.Error != nil {
+		return req.Error
+	}
+
+	return nil
 }

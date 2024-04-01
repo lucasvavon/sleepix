@@ -6,8 +6,8 @@ import (
 
 type Video struct {
 	gorm.Model
-	ID     uint `gorm:"primary_key"`
-	UserId uint
+	ID     *int `gorm:"primary_key"`
+	UserId *int
 	Title  string
 	Link   string
 	Moment string

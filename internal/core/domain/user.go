@@ -6,7 +6,7 @@ import (
 
 type User struct {
 	gorm.Model
-	ID        uint `gorm:"primary_key"`
+	ID        *int `gorm:"primary_key"`
 	Lastname  string
 	Firstname string
 	Email     string
