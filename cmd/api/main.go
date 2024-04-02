@@ -5,41 +5,38 @@ import (
 	"github.com/lucasvavon/slipx-api/internal/adapters/handlers"
 	"github.com/lucasvavon/slipx-api/internal/adapters/repositories/mysql"
 	"github.com/lucasvavon/slipx-api/internal/core/services"
-	"log"
 )
 
-var (
-	us *services.UserService
-	vs *services.VideoService
-)
-
-func main() {
-
-	db := mysql.InitDB()
-
-	userStore := mysql.NewUserGORMRepository(db)   // Assuming NewUserGORMRepository expects *gorm.DB
-	videoStore := mysql.NewVideoGORMRepository(db) // Assuming NewUserGORMRepository expects *gorm.DB
-	if userStore == nil || videoStore == nil {
-		log.Fatalf("Failed to create store")
-	}
-
-	us = services.NewUserService(userStore)
-	vs = services.NewVideoService(videoStore)
-
-	InitRoutes()
-
+type App struct {
+	userService  *services.UserService
+	videoService *services.VideoService
 }
 
-func InitRoutes() {
+func main() {
+	// Initialisation de la DB et des services
+	db := mysql.InitDB()
+	userStore := mysql.NewUserGORMRepository(db)
+	videoStore := mysql.NewVideoGORMRepository(db)
+
+	app := &App{
+		userService:  services.NewUserService(userStore),
+		videoService: services.NewVideoService(videoStore),
+	}
+
+	app.InitRoutes()
+}
+
+func (app *App) InitRoutes() {
 	r := gin.Default()
-	userHandler := handlers.NewUserHandler(*us)
-	videoHandler := handlers.NewVideoHandler(*vs)
+
+	userHandler := handlers.NewUserHandler(*app.userService)
 	r.GET("/users", userHandler.GetUsers)
 	r.GET("/users/:id", userHandler.GetUser)
 	r.POST("/users", userHandler.CreateUser)
 	r.DELETE("/users/:id", userHandler.DeleteUser)
 	r.PUT("/users/:id", userHandler.UpdateUser)
 
+	videoHandler := handlers.NewVideoHandler(*app.videoService)
 	r.GET("/videos", videoHandler.GetVideos)
 	r.GET("/videos/:id", videoHandler.GetVideo)
 	r.POST("/videos", videoHandler.CreateVideo)
