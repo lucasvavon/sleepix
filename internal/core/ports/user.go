@@ -6,7 +6,6 @@ import (
 
 // UserRepository is an interface for interacting with user-related data
 type UserRepository interface {
-	// GetUsers re
 	GetUsers() ([]domain.User, error)
 	GetUser(id *int) (domain.User, error)
 	CreateUser(user *domain.User) error

@@ -9,20 +9,22 @@ import (
 )
 
 var (
-	userHandler *handlers.UserHandler
-	us          *services.UserService
+	us *services.UserService
+	vs *services.VideoService
 )
 
 func main() {
 
 	db := mysql.InitDB()
 
-	store := mysql.NewUserGORMRepository(db) // Assuming NewUserGORMRepository expects *gorm.DB
-	if store == nil {
-		log.Fatalf("Failed to create UserGORMRepository")
+	userStore := mysql.NewUserGORMRepository(db)   // Assuming NewUserGORMRepository expects *gorm.DB
+	videoStore := mysql.NewVideoGORMRepository(db) // Assuming NewUserGORMRepository expects *gorm.DB
+	if userStore == nil || videoStore == nil {
+		log.Fatalf("Failed to create store")
 	}
 
-	us = services.NewUserService(store)
+	us = services.NewUserService(userStore)
+	vs = services.NewVideoService(videoStore)
 
 	InitRoutes()
 
@@ -30,13 +32,21 @@ func main() {
 
 func InitRoutes() {
 	r := gin.Default()
-	handler := handlers.NewUserHandler(*us)
-	r.GET("/users", handler.GetUsers)
-	r.GET("/users/:id", handler.GetUser)
-	r.POST("/users", handler.CreateUser)
-	r.DELETE("/users/:id", handler.DeleteUser)
-	r.PUT("/users/:id", handler.UpdateUser)
-	err := r.Run(":3000")
+	userHandler := handlers.NewUserHandler(*us)
+	videoHandler := handlers.NewVideoHandler(*vs)
+	r.GET("/users", userHandler.GetUsers)
+	r.GET("/users/:id", userHandler.GetUser)
+	r.POST("/users", userHandler.CreateUser)
+	r.DELETE("/users/:id", userHandler.DeleteUser)
+	r.PUT("/users/:id", userHandler.UpdateUser)
+
+	r.GET("/videos", videoHandler.GetVideos)
+	r.GET("/videos/:id", videoHandler.GetVideo)
+	r.POST("/videos", videoHandler.CreateVideo)
+	r.DELETE("/videos/:id", videoHandler.DeleteVideo)
+	r.PUT("/videos/:id", videoHandler.UpdateVideo)
+
+	err := r.Run(":8080")
 	if err != nil {
 		return
 	}

@@ -51,16 +51,24 @@ func (h *UserHandler) CreateUser(ctx *gin.Context) {
 
 	if err := ctx.ShouldBindJSON(&user); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.Abort()
+		return
+	}
+
+	if err := user.HashPassword(user.Password); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.Abort()
 		return
 	}
 
 	err := h.us.CreateUser(&user)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.Abort()
 		return
 	}
 
-	ctx.JSON(http.StatusOK, user)
+	ctx.JSON(http.StatusOK, gin.H{"ID": user.ID, "Firstname": user.Firstname, "Lastname": user.Lastname, "Email": user.Email, "Password": user.Password})
 }
 
 func (h *UserHandler) DeleteUser(ctx *gin.Context) {
