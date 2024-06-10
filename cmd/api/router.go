@@ -29,19 +29,21 @@ func main() {
 func (app *App) InitRoutes() {
 	r := gin.Default()
 
+	api := r.Group("/api")
+
 	userHandler := handlers.NewUserHandler(*app.userService)
-	r.GET("/users", userHandler.GetUsers)
-	r.GET("/users/:id", userHandler.GetUser)
-	r.POST("/users", userHandler.CreateUser)
-	r.DELETE("/users/:id", userHandler.DeleteUser)
-	r.PUT("/users/:id", userHandler.UpdateUser)
+	api.GET("/users", userHandler.GetUsers)
+	api.GET("/users/:id", userHandler.GetUser)
+	api.POST("/users", userHandler.CreateUser)
+	api.DELETE("/users/:id", userHandler.DeleteUser)
+	api.PUT("/users/:id", userHandler.UpdateUser)
 
 	videoHandler := handlers.NewVideoHandler(*app.videoService)
-	r.GET("/videos", videoHandler.GetVideos)
-	r.GET("/videos/:id", videoHandler.GetVideo)
-	r.POST("/videos", videoHandler.CreateVideo)
-	r.DELETE("/videos/:id", videoHandler.DeleteVideo)
-	r.PUT("/videos/:id", videoHandler.UpdateVideo)
+	api.GET("/videos", videoHandler.GetVideos)
+	api.GET("/videos/:id", videoHandler.GetVideo)
+	api.POST("/videos", videoHandler.CreateVideo)
+	api.DELETE("/videos/:id", videoHandler.DeleteVideo)
+	api.PUT("/videos/:id", videoHandler.UpdateVideo)
 
 	err := r.Run(":8080")
 	if err != nil {

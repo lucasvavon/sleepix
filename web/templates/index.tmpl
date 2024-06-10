@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sleepix</title>
+</head>
+<body>
+
+<main>
+
+{{ range $book := .books }}
+<h1>{{ .Title }}</h1>
+<h3>{{ .Author }}</h3>
+<hr/>
+{{ end }}
+
+</main>
+</body>
+</html>
