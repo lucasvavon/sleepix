@@ -8,21 +8,28 @@ import (
 	"gorm.io/gorm"
 	"log"
 	"os"
+	"regexp"
 )
 
 type DB struct {
 	Db *gorm.DB
 }
 
-func init() {
-	// Load .env file
-	err := godotenv.Load()
+func loadEnv() {
+	projectName := regexp.MustCompile(`^(.*sleepix)`)
+	currentWorkDirectory, _ := os.Getwd()
+	rootPath := projectName.Find([]byte(currentWorkDirectory))
+
+	err := godotenv.Load(string(rootPath) + `/.env`)
+
 	if err != nil {
 		log.Fatalf("Error loading .env file")
 	}
 }
 
 func InitDB() *gorm.DB {
+
+	loadEnv()
 
 	dbUser := os.Getenv("DB_USER")
 	dbPass := os.Getenv("DB_PASSWORD")
@@ -36,7 +43,7 @@ func InitDB() *gorm.DB {
 	// Connect to the database
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		panic("Failed to connect to database!")
+		fmt.Printf("Failed to connect to database! %s\n", dsn)
 	}
 
 	fmt.Println("Database connection successfully established")

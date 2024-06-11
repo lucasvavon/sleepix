@@ -12,20 +12,6 @@ type App struct {
 	videoService *services.VideoService
 }
 
-func main() {
-	// Initialisation de la DB et des services
-	db := mysql.InitDB()
-	userStore := mysql.NewUserGORMRepository(db)
-	videoStore := mysql.NewVideoGORMRepository(db)
-
-	app := &App{
-		userService:  services.NewUserService(userStore),
-		videoService: services.NewVideoService(videoStore),
-	}
-
-	app.InitRoutes()
-}
-
 func (app *App) InitRoutes() {
 	r := gin.Default()
 
@@ -49,4 +35,18 @@ func (app *App) InitRoutes() {
 	if err != nil {
 		return
 	}
+}
+
+func main() {
+	// Initialisation de la DB et des services
+	db := mysql.InitDB()
+	userStore := mysql.NewUserGORMRepository(db)
+	videoStore := mysql.NewVideoGORMRepository(db)
+
+	app := &App{
+		userService:  services.NewUserService(userStore),
+		videoService: services.NewVideoService(videoStore),
+	}
+
+	app.InitRoutes()
 }

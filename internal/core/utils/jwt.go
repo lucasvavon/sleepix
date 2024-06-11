@@ -10,7 +10,7 @@ var jwtKey = []byte("supersecretkey")
 
 type JWTClaim struct {
 	Username string `json:"username"`
-	Email    string `json:"email"`
+	Password string `json:"password"`
 	jwt.StandardClaims
 }
 
