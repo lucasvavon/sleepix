@@ -10,5 +10,5 @@ type Video struct {
 	UserId *int
 	Title  string
 	Link   string
-	Moment string
+	Moment *int
 }
