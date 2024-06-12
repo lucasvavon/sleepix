@@ -27,6 +27,7 @@ func (app *App) InitRoutes() {
 	videoHandler := handlers.NewVideoHandler(*app.videoService)
 	api.GET("/videos", videoHandler.GetVideos)
 	api.GET("/videos/:id", videoHandler.GetVideo)
+	api.GET("/videos/user/:id", videoHandler.GetVideosByUserId)
 	api.POST("/videos", videoHandler.CreateVideo)
 	api.DELETE("/videos/:id", videoHandler.DeleteVideo)
 	api.PUT("/videos/:id", videoHandler.UpdateVideo)

@@ -17,6 +17,10 @@ func (s *VideoService) GetVideos() ([]domain.Video, error) {
 	return s.repo.GetVideos()
 }
 
+func (s *VideoService) GetVideosByUserId(userId *int) ([]domain.Video, error) {
+	return s.repo.GetVideosByUserId(userId)
+}
+
 func (s *VideoService) GetVideo(id *int) (domain.Video, error) {
 	return s.repo.GetVideo(id)
 }

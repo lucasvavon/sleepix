@@ -10,17 +10,31 @@ import (
 )
 
 type VideoHandler struct {
-	us services.VideoService
+	vs services.VideoService
 }
 
 func NewVideoHandler(VideoService services.VideoService) *VideoHandler {
 	return &VideoHandler{
-		us: VideoService,
+		vs: VideoService,
 	}
 }
 
 func (h *VideoHandler) GetVideos(ctx *gin.Context) {
-	videos, err := h.us.GetVideos()
+	videos, err := h.vs.GetVideos()
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, videos)
+}
+
+func (h *VideoHandler) GetVideosByUserId(ctx *gin.Context) {
+	idParam := ctx.Param("id")
+	userId, err := strconv.Atoi(idParam)
+	videos, err := h.vs.GetVideosByUserId(&userId)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -35,7 +49,7 @@ func (h *VideoHandler) GetVideo(ctx *gin.Context) {
 
 	idParam := ctx.Param("id")
 	id, err := strconv.Atoi(idParam)
-	video, err := h.us.GetVideo(&id)
+	video, err := h.vs.GetVideo(&id)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -54,7 +68,7 @@ func (h *VideoHandler) CreateVideo(ctx *gin.Context) {
 		return
 	}
 
-	err := h.us.CreateVideo(&video)
+	err := h.vs.CreateVideo(&video)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -66,7 +80,7 @@ func (h *VideoHandler) CreateVideo(ctx *gin.Context) {
 func (h *VideoHandler) DeleteVideo(ctx *gin.Context) {
 	id, _ := strconv.Atoi(ctx.Param("id"))
 
-	err := h.us.DeleteVideo(&id)
+	err := h.vs.DeleteVideo(&id)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -87,7 +101,7 @@ func (h *VideoHandler) UpdateVideo(ctx *gin.Context) {
 	}
 
 	// Call the VideoService to update the video.
-	err := h.us.UpdateVideo(&id, &updateVideo)
+	err := h.vs.UpdateVideo(&id, &updateVideo)
 	if err != nil {
 		// Handle errors, e.g., video not found or validation errors.
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

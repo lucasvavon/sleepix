@@ -32,7 +32,7 @@ func main() {
 	// Récupérer toutes les vidéos
 	videos, err := vs.GetVideos()
 	if err != nil {
-		fmt.Println("Erreur lors de la récupération des vidéos:", err)
+		fmt.Println(err)
 		return
 	}
 

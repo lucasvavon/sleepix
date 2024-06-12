@@ -24,6 +24,15 @@ func (r *VideoGORMRepository) GetVideos() ([]domain.Video, error) {
 	return videos, nil
 }
 
+func (r *VideoGORMRepository) GetVideosByUserId(userId *int) ([]domain.Video, error) {
+	var videos []domain.Video
+	req := r.db.Where("user_id = ?", userId).Find(&videos)
+	if req.Error != nil {
+		return nil, fmt.Errorf("videos not found: %v", req.Error)
+	}
+	return videos, nil
+}
+
 func (r *VideoGORMRepository) GetVideo(id *int) (domain.Video, error) {
 	var video domain.Video
 	req := r.db.First(&video, id)
