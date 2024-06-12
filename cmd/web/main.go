@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/lucasvavon/slipx-api/internal/core/domain"
 	"net/http"
 	"text/template"
 
@@ -12,6 +13,10 @@ import (
 type App struct {
 	userService  *services.UserService
 	videoService *services.VideoService
+}
+
+type Data struct {
+	Videos []domain.Video
 }
 
 func main() {
@@ -32,10 +37,11 @@ func main() {
 	}
 
 	// Afficher les vidéos récupérées
-	tmpl := template.Must(template.ParseFiles("templates/index.html"))
+	tmpl := template.Must(template.ParseFiles("./templates/index.html"))
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		data := Data{Videos: videos}
 
-		tmpl.Execute(w, videos)
+		tmpl.Execute(w, data)
 	})
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8081", nil)
 }
